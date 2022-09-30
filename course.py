@@ -64,14 +64,52 @@ class CourseProgress:
         return sum(values) / len(amounts_of_marks)
 
     def fill_notes(self, note: str) -> None:
+        """Adding new note to notes
+
+        Args:
+            note (str): note which we want to add.
+
+        Returns:
+            Nothing.
+
+        """
         today_date = date.today()
         self.notes[today_date] = note
 
     def remove_note(self, date: date) -> None:
+        """Deleting notes by the date.
+
+        Args:
+            date (date): date of the note we want to delete.
+
+        Returns:
+            Nothing.
+
+        """
         del self.notes[date]
 
 
 class Course:
+    """Represents course.
+
+    Args:
+        title (str): title of the Course,
+        start_date (datetime): start date of the course.
+        end_date (datetime): end date of the course.
+        description (str): description of the course.
+        lectures (list[str]): list of lectures.
+        assignments (list[str]): list of assignments.
+        limit (int): limit of accepted students.
+        students_list (list[int]): list of student's id's.
+
+    Methods:
+        add_student(student: Student)
+            Calling enroll method from Student.
+
+        remove_student(student: Student)
+            Calling unenroll method from Student.
+
+    """
     def __init__(self, title: str, start_date: datetime, end_date: datetime,
                  description: str, lectures: list[str], assignments: list[str],
                  limit: int, students_list: list[int]):
@@ -85,6 +123,14 @@ class Course:
         self.students_list = students_list
 
     def add_student(self, student: Student) -> None:
+        """Adding student to the current Course
+
+        Args:
+             student (Student): class Student.
+
+        Returns:
+            Nothing.
+        """
         try:
             student.enroll(course=self)
         except ValueError:
@@ -92,6 +138,15 @@ class Course:
                 f"Student id: {student.student_id} has already enrolled to {self.title}.")
 
     def remove_student(self, student: Student) -> None:
+        """Removing student from the current Course
+
+        Args:
+            student (Student): class Student.
+
+        Returns:
+            Nothing.
+
+        """
         try:
             student.unenroll(course=self)
         except ValueError:

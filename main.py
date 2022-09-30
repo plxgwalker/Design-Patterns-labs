@@ -4,6 +4,13 @@ from university_stuff import Student, Professor
 from course import Course, CourseProgress
 
 if __name__ == "__main__":
+    """Testing of all methods from this lab work.
+    
+    Fix:
+        Unenroll method: class Student.
+        Remove student method: class Course.
+        
+    """
     test_student = Student("Test Student", "Drahomanova, 50", "+380000000007",
                            "test.student@lnu.edu.com", 1, 2.2, ["Math", "OOP"])
     test_course = Course("Test Course", 2022-9-1, 2023-6-30,
