@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import Dict, List, TYPE_CHECKING
 from datetime import datetime
+from dataclasses import dataclass
+from abc import  ABC, abstractmethod
 if TYPE_CHECKING:
     from course import Course, CourseProgress
 
@@ -146,3 +148,22 @@ class Professor:
                 value["mark"] = 5
             if key:
                 course_progress.received_marks.update({"datetime": 5})
+
+
+@dataclass
+class PersonalInfo:
+        id: int
+        first_name: str
+        second_name: str
+        address: str
+        phone_number: str
+        email: str
+        position: int
+        rank: str
+        salary: float
+
+
+@property
+def split_full_name(phrase: str) -> list:
+    splitted_full_name = phrase.split()
+    return splitted_full_name
