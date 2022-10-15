@@ -1,112 +1,91 @@
 from __future__ import annotations
+
+import abc
 from typing import Dict, List, TYPE_CHECKING
 from datetime import datetime
 from dataclasses import dataclass
-from abc import  ABC, abstractmethod
+from abc import ABC, abstractmethod
 if TYPE_CHECKING:
     from course import Course, CourseProgress
 
 
-class Student:
-    """
-    A class Student represents student of university.
+@dataclass
+class PersonalInfo:
+    id: int
+    first_name: str
+    second_name: str
+    address: str
+    phone_number: str
+    email: str
+    position: int
+    rank: str
+    salary: float
 
-    Args:
-        full_name (str): full name of student.
-        address (str): address where living student.
-        phone_number (str): phone number of student.
-        email (str): email of student.
-        student_id (int): id of student.
-        average_mark (float): arithmetic mean of student.
 
-    Methods:
-        enroll(course: Course)
-            Adding student to the course. Returns nothing.
+@property
+def split_full_name(phrase: str) -> None:
+    splitted_full_name = phrase.split()
+    PersonalInfo.first_name = splitted_full_name[0]
+    PersonalInfo.second_name = splitted_full_name[1]
 
-        unenroll(course: Course)
-            Kicking student from course.
 
-    """
+class Staff(ABC):
+    def __init__(self) -> None:
+        self._personal_info = 0
 
-    def __init__(self, full_name: str, address: str, phone_number: str,
-                 email: str, student_id: int, average_mark: float, courses: list):
-        """
-        Parameters:
-            full_name (str): full name of student.
-            address (str): address where living student.
-            phone_number (str): phone number of student.
-            email (str): email of student.
-            student_id (int): id of student.
-            average_mark (float): arithmetic mean of student.
-            courses (list): list of student's courses.
+    @property
+    def personal_info(self):
+        return self._personal_info
 
-        """
-        self.full_name = full_name
-        self.address = address
-        self.phone_number = phone_number
-        self.email = email
-        self.student_id = student_id
-        self.average_mark = average_mark
-        self.courses = courses
+    @personal_info.setter
+    def personal_info(self, personal_info: PersonalInfo) -> None:
+        if isinstance(personal_info, PersonalInfo):
+            self._personal_info = personal_info
 
-    @staticmethod
-    def taken_courses(self) -> list:
-        """Returning courses which has student
+    @abstractmethod
+    def ask_sick_leave(self, department: Department) -> bool:
+        pass
 
-        Returns:
-            List of student's courses.
+    @abstractmethod
+    def send_request(self, department: Department) -> bool:
+        pass
 
-        """
-        return self.courses
 
-    def enroll(self, course: Course) -> None:
-        """Enroll student to course
+class Student(Staff):
+    def personal_info(self):
+        return self._personal_info, self.average_mark, self.courses
 
-        Args:
-            course (Course): the course to which we are wanting to add student.
+    def personal_info(self, personal_info: PersonalInfo,
+                      average_mark: float, courses: list) -> None:
+        if isinstance(personal_info, PersonalInfo):
+            self._personal_info = personal_info
+            self.average_mark = average_mark
+            self.courses = courses
 
-        Returns:
-            Nothing.
+    def send_request(self, destination: Department) -> bool:
+        pass
 
-        Raises:
-            ValueError: If "x.title" hasn't mentioned in "self.courses"
+    def ask_sick_leave(self, department: Department) -> bool:
+        pass
 
-        """
-        for x in self.courses:
-            if x.title == course.title:
-                raise ValueError("Course has already enrolled.")
-                break
-            else:
-                self.courses.append(course.title)
-                course.students_list.append(self.student_id)
-                print(
-                    f"Student id: {self.student_id} has enrolled to {course.title}")
-                break
 
-    def unenroll(self, course: Course) -> None:
-        """Unenroll student from course
+class PostgraduateStudent(Staff):
+    def personal_info(self):
+        return self._personal_info, self.average_mark, self.courses, self.phd_status
 
-            Args:
-                course (Course): the course from which we are wanting to unenroll student.
+    def personal_info(self, personal_info: PersonalInfo,
+                      average_mark: float, courses: list, phd_status: bool) -> None:
+        if isinstance(personal_info, PersonalInfo):
+            self._personal_info = personal_info
+            self.average_mark = average_mark
+            self.courses = courses
+            self.phd_status = phd_status
 
-            Returns:
-                Nothing.
+    def send_request(self, destination: Department) -> bool:
+        pass
 
-            Raises:
-                ValueError: If "x.title" hasn't mentioned in "self.courses"
-
-        """
-        for x in self.courses:
-            if x.title == course.title:
-                self.courses.remove(course.title)
-                course.students_list.remove(self.student_id)
-                print(
-                    f"Student id: {self.student_id} has unenrolled from {course.title}")
-                break
-            else:
-                print(
-                    f"Student id: {self.student_id} has already been unenrolled from {course.title}")
-                break
+    def ask_sick_leave(self, department: Department) -> bool:
+        pass
 
 
 class Professor:
@@ -148,22 +127,3 @@ class Professor:
                 value["mark"] = 5
             if key:
                 course_progress.received_marks.update({"datetime": 5})
-
-
-@dataclass
-class PersonalInfo:
-        id: int
-        first_name: str
-        second_name: str
-        address: str
-        phone_number: str
-        email: str
-        position: int
-        rank: str
-        salary: float
-
-
-@property
-def split_full_name(phrase: str) -> list:
-    splitted_full_name = phrase.split()
-    return splitted_full_name
