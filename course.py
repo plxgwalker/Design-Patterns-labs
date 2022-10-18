@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List, TYPE_CHECKING
+from typing import Dict, List, TYPE_CHECKING, Any
 from datetime import datetime, date
 if TYPE_CHECKING:
     from university_stuff import Student, Professor
@@ -36,7 +36,7 @@ class CourseProgress:
         self.completed_assignments = completed_assignments
         self.notes = notes
 
-    def get_progress_to_date(self, date: datetime) -> str:
+    def get_progress_to_date(self, date: datetime) -> list:
         """Returning marks of the student
 
         Args:
@@ -110,9 +110,10 @@ class Course:
             Calling unenroll method from Student.
 
     """
+
     def __init__(self, title: str, start_date: datetime, end_date: datetime,
                  description: str, lectures: list[str], assignments: list[str],
-                 limit: int, students_list: list[int]):
+                 limit: int, students_list: list[int], seminars: list[str]):
         self.title = title
         self.start_date = start_date
         self.end_date = end_date
@@ -121,6 +122,7 @@ class Course:
         self.assignments = assignments
         self.limit = limit
         self.students_list = students_list
+        self.seminars = seminars
 
     def add_student(self, student: Student) -> None:
         """Adding student to the current Course
@@ -152,3 +154,20 @@ class Course:
         except ValueError:
             print(
                 f"Student id: {student.student_id} has already unenrolled to {self.title}.")
+
+
+class Seminar:
+    def __init__(self, id: int, title: str, deadline: datetime,
+                 assignments: list[dict], status: Any, related_course: str) -> None:
+        self.id = id
+        self.title = title
+        self.deadline = deadline
+        self.assignments = assignments
+        self.status = status
+        self.related_course = related_course
+
+    def implement_item(self, item_name: str) -> None:
+        pass
+
+    def add_comment(self, comment: str) -> None:
+        pass

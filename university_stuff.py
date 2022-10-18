@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import abc
-from typing import Dict, List, TYPE_CHECKING
+from typing import Dict, List, TYPE_CHECKING, Any
 from datetime import datetime
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
+
 if TYPE_CHECKING:
     from course import Course, CourseProgress
 
@@ -21,6 +22,12 @@ class PersonalInfo:
     rank: str
     salary: float
 
+    def __str__(self):
+        return f"ID: {self.id}\nFirst name: {self.first_name}\n" \
+               f"Second name: {self.second_name}\nAddress: {self.address}\n" \
+               f"Phone number: {self.phone_number}\nEmail: {self.email}\n" \
+               f"Position: {self.position}\nRank: {self.rank}\nSalary: {self.salary}"
+
 
 @property
 def split_full_name(phrase: str) -> None:
@@ -31,7 +38,7 @@ def split_full_name(phrase: str) -> None:
 
 class Staff(ABC):
     def __init__(self) -> None:
-        self._personal_info = 0
+        self._personal_info = None
 
     @property
     def personal_info(self):
@@ -52,16 +59,13 @@ class Staff(ABC):
 
 
 class Student(Staff):
-    def personal_info(self):
-        return self._personal_info, self.average_mark, self.courses
+    def __init__(self, average_mark: float, phd_status: bool) -> None:
+        super().__init__()
+        self.average_mark = average_mark
+        self.phd_status = phd_status
 
-    def personal_info(self, personal_info: PersonalInfo,
-                      average_mark: float, courses: list) -> None:
-        if isinstance(personal_info, PersonalInfo):
-            self._personal_info = personal_info
-            self.average_mark = average_mark
-            self.courses = courses
-
+    def __str__(self):
+        return f"Average mark: {self.average_mark}\nPHD status: {self.phd_status}"
     def send_request(self, destination: Department) -> bool:
         pass
 
@@ -70,16 +74,10 @@ class Student(Staff):
 
 
 class PostgraduateStudent(Staff):
-    def personal_info(self):
-        return self._personal_info, self.average_mark, self.courses, self.phd_status
-
-    def personal_info(self, personal_info: PersonalInfo,
-                      average_mark: float, courses: list, phd_status: bool) -> None:
-        if isinstance(personal_info, PersonalInfo):
-            self._personal_info = personal_info
-            self.average_mark = average_mark
-            self.courses = courses
-            self.phd_status = phd_status
+    def __init__(self, average_mark: float, phd_status: bool) -> None:
+        super().__init__()
+        self.average_mark = average_mark
+        self.phd_status = phd_status
 
     def send_request(self, destination: Department) -> bool:
         pass
@@ -127,3 +125,16 @@ class Professor:
                 value["mark"] = 5
             if key:
                 course_progress.received_marks.update({"datetime": 5})
+
+
+class Department:
+    def __init__(self, title: str, students: list[Student], professors: list[Professor],
+                 courses: list[str], requests: list[Any]):
+        self.title = title
+        self.students = students
+        self.professors = professors
+        self.courses = courses
+        self.requests = requests
+
+    def proceed_requests(self) -> Any:
+        pass
