@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Dict, List, TYPE_CHECKING, Any
 from datetime import datetime, date
+
 if TYPE_CHECKING:
     from university_stuff import Student, Professor
 
@@ -102,15 +103,7 @@ class Course:
         limit (int): limit of accepted students.
         students_list (list[int]): list of student's id's.
 
-    Methods:
-        add_student(student: Student)
-            Calling enroll method from Student.
-
-        remove_student(student: Student)
-            Calling unenroll method from Student.
-
     """
-
     def __init__(self, title: str, start_date: datetime, end_date: datetime,
                  description: str, lectures: list[str], assignments: list[str],
                  limit: int, students_list: list[int], seminars: list[str]):
@@ -124,50 +117,80 @@ class Course:
         self.students_list = students_list
         self.seminars = seminars
 
-    def add_student(self, student: Student) -> None:
-        """Adding student to the current Course
-
-        Args:
-             student (Student): class Student.
-
-        Returns:
-            Nothing.
-        """
-        try:
-            student.enroll(course=self)
-        except ValueError:
-            print(
-                f"Student id: {student.student_id} has already enrolled to {self.title}.")
-
-    def remove_student(self, student: Student) -> None:
-        """Removing student from the current Course
-
-        Args:
-            student (Student): class Student.
-
-        Returns:
-            Nothing.
-
-        """
-        try:
-            student.unenroll(course=self)
-        except ValueError:
-            print(
-                f"Student id: {student.student_id} has already unenrolled to {self.title}.")
-
 
 class Seminar:
-    def __init__(self, id: int, title: str, deadline: datetime,
+    def __init__(self, _id: int, title: str, deadline: datetime,
                  assignments: list[dict], status: Any, related_course: str) -> None:
-        self.id = id
+        self.id = _id
         self.title = title
         self.deadline = deadline
         self.assignments = assignments
         self.status = status
         self.related_course = related_course
 
+    def __str__(self):
+        return f"\nSeminar id: {self.id} \nSeminar title: {self.title} " \
+               f"\nDeadline: {self.deadline} \nAssignments: {self.assignments}" \
+               f"\nStatus: {self.status} \nCourse: {self.related_course}"
+
     def implement_item(self, item_name: str) -> None:
         pass
 
     def add_comment(self, comment: str) -> None:
         pass
+
+
+class Enrollment:
+    """Represents enrollment 'Student' to 'Course'.
+
+    Args:
+        student (Student): 'Student' which have to be added to 'Course'.
+        course (Course): 'Course' to which 'Student' have to be added.
+
+    Methods:
+        enroll ():
+            Enrolling 'Student' to the 'Course'.
+
+        unenroll ():
+            Unenrolling 'Student' from the 'Course'.
+
+    """
+    def __init__(self, student: Student, course: Course):
+        self.student = student
+        self.course = course
+
+    def enroll(self) -> None:
+        """Enrollment function.
+
+            Args:
+                self
+
+            Returns:
+                None
+
+            Raises:
+                ValueError: If 'Student' has already been enrolled in this 'Course'.
+
+        """
+        if self.student.personal_info.id in self.course.students_list:
+            raise ValueError("Student has already enrolled.")
+        else:
+            self.course.students_list.append(self.student.personal_info.id)
+
+    def unenroll(self) -> None:
+        """Unenrollment function.
+
+            Args:
+                self
+
+            Returns:
+                None
+
+            Raises:
+                ValueError: If 'Student' does not exists in this 'Course'.
+
+        """
+        if self.student.personal_info.id in self.course.students_list:
+            self.course.students_list.remove(self.student.personal_info.id)
+        else:
+            raise ValueError("Student does not exists in this course.")

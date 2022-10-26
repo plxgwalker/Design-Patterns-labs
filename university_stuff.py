@@ -79,6 +79,9 @@ class PostgraduateStudent(Staff):
         self.average_mark = average_mark
         self.phd_status = phd_status
 
+    def __str__(self):
+        return f"Average mark: {self.average_mark}\nPHD status: {self.phd_status}"
+
     def send_request(self, destination: Department) -> bool:
         pass
 
@@ -104,6 +107,18 @@ class Professor:
         self.phone_number = phone_number
         self.email = email
         self.salary = salary
+
+    def send_request(self, destination: Department) -> bool:
+        pass
+
+    def ask_sick_leave(self, department: Department) -> bool:
+        pass
+
+    def add_postgraduate_student(self, student: PostgraduateStudent) -> None:
+        pass
+
+    def request_support(self) -> None:
+        pass
 
     @staticmethod
     def check_assignment(assignment: dict, course_progress: CourseProgress) -> None:
@@ -135,6 +150,11 @@ class Department:
         self.professors = professors
         self.courses = courses
         self.requests = requests
+
+    def __str__(self):
+        return f"Department title: {self.title}\nStudents: {self.students}" \
+               f"\nProfessors: {self.professors}\nCourses: {self.courses}" \
+               f"\nRequests: {self.requests}"
 
     def proceed_requests(self) -> Any:
         pass
