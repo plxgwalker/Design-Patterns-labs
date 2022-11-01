@@ -1,9 +1,41 @@
 from __future__ import annotations
 from typing import Dict, List, TYPE_CHECKING, Any
 from datetime import datetime, date
+from dataclasses import dataclass
+from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:
     from university_stuff import Student, Professor
+
+
+@dataclass
+class GroupInfo:
+    id: int
+    title: str
+    student_list: list
+    department_id: int
+
+
+@dataclass
+class CourseInfo:
+    title: str
+    start_date: date
+    end_date: date
+    description: str
+    lectures: list[str]
+    assignments: list[str]
+    limit: int
+    students_list: list[int]
+
+    def __str__(self):
+        return f"Title: {self.title}\n" \
+               f"Description: {self.description}\n" \
+               f"Start date: {self.start_date}\n" \
+               f"End date: {self.end_date}\n" \
+               f"Lectures: {self.lectures}\n" \
+               f"Assignments: {self.assignments}\n" \
+               f"Student limit: {self.limit}\n" \
+               f"Students list: {self.students_list}\n"
 
 
 class CourseProgress:
@@ -90,36 +122,106 @@ class CourseProgress:
         del self.notes[date]
 
 
-class Course:
-    """Represents course.
+class Course(ABC):
 
-    Args:
-        title (str): title of the Course,
-        start_date (datetime): start date of the course.
-        end_date (datetime): end date of the course.
-        description (str): description of the course.
-        lectures (list[str]): list of lectures.
-        assignments (list[str]): list of assignments.
-        limit (int): limit of accepted students.
-        students_list (list[int]): list of student's id's.
+    def __init__(self) -> None:
+        self._course_info = None
 
-    """
-    def __init__(self, title: str, start_date: datetime, end_date: datetime,
-                 description: str, lectures: list[str], assignments: list[str],
-                 limit: int, students_list: list[int], seminars: list[str]):
-        self.title = title
-        self.start_date = start_date
-        self.end_date = end_date
-        self.description = description
-        self.lectures = lectures
-        self.assignments = assignments
-        self.limit = limit
-        self.students_list = students_list
-        self.seminars = seminars
+    @property
+    def course_info(self):
+        return self._course_info
+
+    @course_info.setter
+    def course_info(self, course_info: CourseInfo) -> None:
+        if isinstance(course_info, CourseInfo):
+            self._course_info = course_info
+
+    @abstractmethod
+    def add_student(self, student: Student.personal_info.id):
+        if student in self.course_info.students_list:
+            raise ValueError(f"Student {student} already exists in this course.")
+        else:
+            self.course_info.students_list.append(student)
+
+    @abstractmethod
+    def remove_student(self, student: Student.personal_info.id):
+        if student not in self.course_info.students_list:
+            raise ValueError(f"Student {student} does not exists in this course.")
+        else:
+            self.course_info.students_list.remove(student)
+
+
+class MathCourse(Course):
+    def __init__(self, practice_classes: int, modules: int):
+        super().__init__()
+        self.practice_classes = practice_classes
+        self.modules = modules
+
+    def __str__(self):
+        return f"Course info: {self.course_info}" \
+               f"\nMath course classes: {self.practice_classes}, Modules: {self.modules}"
+
+    def add_student(self, student: Student.personal_info.id):
+        if student in self.course_info.students_list:
+            raise ValueError(f"Student {student} already exists in this course.")
+        else:
+            self.course_info.students_list.append(student)
+
+    def remove_student(self, student: Student.personal_info.id):
+        if student not in self.course_info.students_list:
+            raise ValueError(f"Student {student} does not exists in this course.")
+        else:
+            self.course_info.students_list.remove(student)
+
+
+class ProgrammingCourse(Course):
+    def __init__(self, patterns: int, modules: int):
+        super().__init__()
+        self.patterns = patterns
+        self.modules = modules
+
+    def __str__(self):
+        return f"Course info: {self.course_info}" \
+               f"\nProgramming course patterns: {self.patterns}, Modules: {self.modules}"
+
+    def add_student(self, student: Student.personal_info.id):
+        if student in self.course_info.students_list:
+            raise ValueError(f"Student {student} already exists in this course.")
+        else:
+            self.course_info.students_list.append(student)
+
+    def remove_student(self, student: Student.personal_info.id):
+        if student not in self.course_info.students_list:
+            raise ValueError(f"Student {student} does not exists in this course.")
+        else:
+            self.course_info.students_list.remove(student)
+
+
+class AlgorithmCourse(Course):
+    def __init__(self, algorithms: int, modules: int):
+        super().__init__()
+        self.algorithms = algorithms
+        self.modules = modules
+
+    def __str__(self):
+        return f"Course info: {self.course_info}" \
+               f"\nProgramming course patterns: {self.algorithms}, Modules: {self.modules}"
+
+    def add_student(self, student: Student.personal_info.id):
+        if student in self.course_info.students_list:
+            raise ValueError(f"Student {student} already exists in this course.")
+        else:
+            self.course_info.students_list.append(student)
+
+    def remove_student(self, student: Student.personal_info.id):
+        if student not in self.course_info.students_list:
+            raise ValueError(f"Student {student} does not exists in this course.")
+        else:
+            self.course_info.students_list.remove(student)
 
 
 class Seminar:
-    def __init__(self, _id: int, title: str, deadline: datetime,
+    def __init__(self, _id: int, title: str, deadline: date,
                  assignments: list[dict], status: Any, related_course: str) -> None:
         self.id = _id
         self.title = title
@@ -155,6 +257,7 @@ class Enrollment:
             Unenrolling 'Student' from the 'Course'.
 
     """
+
     def __init__(self, student: Student, course: Course):
         self.student = student
         self.course = course
@@ -172,10 +275,10 @@ class Enrollment:
                 ValueError: If 'Student' has already been enrolled in this 'Course'.
 
         """
-        if self.student.personal_info.id in self.course.students_list:
+        if self.student.personal_info.id in self.course.course_info.students_list:
             raise ValueError("Student has already enrolled.")
         else:
-            self.course.students_list.append(self.student.personal_info.id)
+            self.course.course_info.students_list.append(self.student.personal_info.id)
 
     def unenroll(self) -> None:
         """Unenrollment function.
@@ -190,7 +293,7 @@ class Enrollment:
                 ValueError: If 'Student' does not exists in this 'Course'.
 
         """
-        if self.student.personal_info.id in self.course.students_list:
-            self.course.students_list.remove(self.student.personal_info.id)
+        if self.student.personal_info.id in self.course.course_info.students_list:
+            self.course.course_info.students_list.remove(self.student.personal_info.id)
         else:
             raise ValueError("Student does not exists in this course.")

@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 import abc
-from typing import Dict, List, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Type
 from datetime import datetime
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
-
-if TYPE_CHECKING:
-    from course import Course, CourseProgress
+from course import Course, CourseInfo, CourseProgress
 
 
 @dataclass
@@ -34,6 +32,14 @@ def split_full_name(phrase: str) -> None:
     splitted_full_name = phrase.split()
     PersonalInfo.first_name = splitted_full_name[0]
     PersonalInfo.second_name = splitted_full_name[1]
+
+
+@dataclass
+class Group:
+    id: int
+    title: str
+    students_list: list
+    department_id: int
 
 
 class Staff(ABC):
@@ -66,6 +72,7 @@ class Student(Staff):
 
     def __str__(self):
         return f"Average mark: {self.average_mark}\nPHD status: {self.phd_status}"
+
     def send_request(self, destination: Department) -> bool:
         pass
 
@@ -89,35 +96,27 @@ class PostgraduateStudent(Staff):
         pass
 
 
-class Professor:
-    """Class professor represents professor of university.
-
-    Args:
-        full_name (str): full name of professor.
-        address (str): address where professor currently living.
-        phone_number (str): phone number of professor.
-        email (str): email of student.
-        salary (float): salary of professor.
-
-    """
-
-    def __init__(self, full_name: str, address: str, phone_number: str, email: str, salary: float):
-        self.full_name = full_name
-        self.address = address
-        self.phone_number = phone_number
-        self.email = email
+class Professor(Staff):
+    def __init__(self, salary: float, related_course: Course) -> None:
+        super().__init__()
         self.salary = salary
+        self.related_course = related_course
 
-    def send_request(self, destination: Department) -> bool:
-        pass
+    @abstractmethod
+    def fill_course(self, group: Group, *args):
+        for i in group.students_list:
+            self.related_course.add_student(i)
+
+    @abstractmethod
+    def create_course(self, *args):
+        new_course = Course
+        new_course.course_info = CourseInfo(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7])
+        return new_course
 
     def ask_sick_leave(self, department: Department) -> bool:
         pass
 
-    def add_postgraduate_student(self, student: PostgraduateStudent) -> None:
-        pass
-
-    def request_support(self) -> None:
+    def send_request(self, department: Department) -> bool:
         pass
 
     @staticmethod
@@ -142,9 +141,21 @@ class Professor:
                 course_progress.received_marks.update({"datetime": 5})
 
 
+class MathProfessor(Professor):
+    def fill_course(self, group: Group, *args):
+        for student in group.students_list:
+            self.related_course.add_student(student)
+
+    def create_course(self, *args):
+        new_course = Course
+        new_course.course_info = CourseInfo(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7])
+        return new_course
+
+
 class Department:
-    def __init__(self, title: str, students: list[Student], professors: list[Professor],
+    def __init__(self, department_id: int, title: str, students: list[Student], professors: list[Professor],
                  courses: list[str], requests: list[Any]):
+        self.department_id = department_id
         self.title = title
         self.students = students
         self.professors = professors
