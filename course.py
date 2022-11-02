@@ -1,15 +1,24 @@
 from __future__ import annotations
-from typing import Dict, List, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any
 from datetime import datetime, date
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:
-    from university_stuff import Student, Professor
+    from university_stuff import Student
 
 
 @dataclass
 class GroupInfo:
+    """Class represents information about 'Group'.
+
+    Arguments:
+        id (int): 'Group' id.
+        title (str): 'Group' name.
+        students_list (list): 'Group' list.
+        department_id (int) Department id of a 'Group'.
+
+    """
     id: int
     title: str
     student_list: list
@@ -18,6 +27,26 @@ class GroupInfo:
 
 @dataclass
 class CourseInfo:
+    """Class represents information about 'Course'.
+
+        Arguments:
+            title (str): 'Course' name.
+            start_date (date): Date of start 'Course'.
+            end_date (date): Date of the end 'Course'.
+            description (str): Information about 'Course'.
+            lectures (list): List of lectures in 'Course'.
+            assignments (list): List of assignments in 'Course'.
+            limit (int): Student limit.
+            students_list (list): List of students in 'Course'.
+
+        Methods:
+            __str__():
+                Returns 'Course' info.
+
+        Returns:
+            __str__(): Returns 'Course' info.
+
+        """
     title: str
     start_date: date
     end_date: date
@@ -27,7 +56,7 @@ class CourseInfo:
     limit: int
     students_list: list[int]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Title: {self.title}\n" \
                f"Description: {self.description}\n" \
                f"Start date: {self.start_date}\n" \
@@ -41,38 +70,37 @@ class CourseInfo:
 class CourseProgress:
     """Represents progress of the course.
 
-    Args:
+    Arguments:
         received_marks (dict): marks which received student.
         visited_lectures (int): how much lectures student have visited.
         completed_assignments (dict): completed assignments of student. 
         notes (dict): notes which have taken student.
 
     Methods:
-        get_progress_to_date(date: datetime)
+        get_progress_to_date(date: datetime):
            Returns marks of the student.
 
-        get_final_mark()
+        get_final_mark():
             Returns total float mark.
 
-        fill_notes(note: str)
-            Adding note to the dictionary "notes"
+        fill_notes(note: str):
+            Adding note to the dictionary "notes".
 
-        remove_note(date: datetime)
-            Removing note from dictionary "notes" by the date
+        remove_note(date: datetime):
+            Removing note from dictionary "notes" by the date.
 
     """
 
-    def __init__(self, received_marks: dict, visited_lectures: int,
-                 completed_assignments: dict, notes: dict):
+    def __init__(self, received_marks: dict, visited_lectures: int, completed_assignments: dict, notes: dict) -> None:
         self.received_marks = received_marks
         self.visited_lectures = visited_lectures
         self.completed_assignments = completed_assignments
         self.notes = notes
 
     def get_progress_to_date(self, date: datetime) -> list:
-        """Returning marks of the student
+        """Returning marks of the student.
 
-        Args:
+        Arguments:
             date (datetime): date due to which we want to take marks.
 
         Returns:
@@ -86,7 +114,7 @@ class CourseProgress:
         return marks
 
     def get_final_mark(self) -> float:
-        """Returning final mark of student
+        """Returning final mark of student.
 
         Returns:
             Arithmetic mean of student for this course.
@@ -123,12 +151,38 @@ class CourseProgress:
 
 
 class Course(ABC):
+    """Abstract class represents 'Course'.
 
+    Methods:
+        @property
+        course_info ():
+            Returns information about 'Course'.
+
+        @course_info.setter
+        course_info (course_info: CourseInfo) -> None:
+            Setting information about 'Course'.
+
+        @abstractmethod
+        add_student(student: Student.personal_info.id) -> None:
+            Adding 'Student' to 'Course'.
+
+        @abstractmethod
+        remove_student(student: Student.personal_info.id) -> None:
+            Removes 'Student' from 'Course'.
+
+    Raises:
+        ValueError in add_student:
+            If 'Student' already exists in 'Course'.
+
+        ValueError in remove_student:
+            If 'Student' does not exist in 'Course'.
+
+    """
     def __init__(self) -> None:
         self._course_info = None
 
     @property
-    def course_info(self):
+    def course_info(self) -> CourseInfo:
         return self._course_info
 
     @course_info.setter
@@ -137,14 +191,14 @@ class Course(ABC):
             self._course_info = course_info
 
     @abstractmethod
-    def add_student(self, student: Student.personal_info.id):
+    def add_student(self, student: Student.personal_info.id) -> None:
         if student in self.course_info.students_list:
             raise ValueError(f"Student {student} already exists in this course.")
         else:
             self.course_info.students_list.append(student)
 
     @abstractmethod
-    def remove_student(self, student: Student.personal_info.id):
+    def remove_student(self, student: Student.personal_info.id) -> None:
         if student not in self.course_info.students_list:
             raise ValueError(f"Student {student} does not exists in this course.")
         else:
@@ -152,6 +206,23 @@ class Course(ABC):
 
 
 class MathCourse(Course):
+    """Class represents inheritance from 'Course'.
+
+        Methods:
+            add_student(student: Student.personal_info.id) -> None:
+                Adding 'Student' to 'Course'.
+
+            remove_student(student: Student.personal_info.id) -> None:
+                Removes 'Student' from 'Course'.
+
+        Raises:
+            ValueError in add_student:
+                If 'Student' already exists in 'Course'.
+
+            ValueError in remove_student:
+                If 'Student' does not exist in 'Course'.
+
+        """
     def __init__(self, practice_classes: int, modules: int):
         super().__init__()
         self.practice_classes = practice_classes
@@ -175,6 +246,23 @@ class MathCourse(Course):
 
 
 class ProgrammingCourse(Course):
+    """Class represents inheritance from 'Course'.
+
+        Methods:
+            add_student(student: Student.personal_info.id) -> None:
+                Adding 'Student' to 'Course'.
+
+            remove_student(student: Student.personal_info.id) -> None:
+                Removes 'Student' from 'Course'.
+
+        Raises:
+            ValueError in add_student:
+                If 'Student' already exists in 'Course'.
+
+            ValueError in remove_student:
+                If 'Student' does not exist in 'Course'.
+
+    """
     def __init__(self, patterns: int, modules: int):
         super().__init__()
         self.patterns = patterns
@@ -198,6 +286,23 @@ class ProgrammingCourse(Course):
 
 
 class AlgorithmCourse(Course):
+    """Class represents inheritance from 'Course'.
+
+        Methods:
+            add_student(student: Student.personal_info.id) -> None:
+                Adding 'Student' to 'Course'.
+
+            remove_student(student: Student.personal_info.id) -> None:
+                Removes 'Student' from 'Course'.
+
+        Raises:
+            ValueError in add_student:
+                If 'Student' already exists in 'Course'.
+
+            ValueError in remove_student:
+                If 'Student' does not exist in 'Course'.
+
+        """
     def __init__(self, algorithms: int, modules: int):
         super().__init__()
         self.algorithms = algorithms
@@ -221,6 +326,23 @@ class AlgorithmCourse(Course):
 
 
 class Seminar:
+    """Class represents seminar for 'Course'.
+
+    Arguments:
+        _id (int): id of 'Seminar'.
+        title (str): Title of 'Seminar'.
+        deadline (date): Deadline of 'Seminar'.
+        assignments (list): List of 'Seminar' assignments.
+        status (Any): Status of 'Seminar'.
+        related_course (str): 'Course' of 'Seminar'.
+
+    Methods:
+        implement_item(item_name: str) -> None:
+            Pass.
+
+        add_comment(comment: str) -> None:
+            Pass.
+    """
     def __init__(self, _id: int, title: str, deadline: date,
                  assignments: list[dict], status: Any, related_course: str) -> None:
         self.id = _id
@@ -265,9 +387,6 @@ class Enrollment:
     def enroll(self) -> None:
         """Enrollment function.
 
-            Args:
-                self
-
             Returns:
                 None
 
@@ -282,9 +401,6 @@ class Enrollment:
 
     def unenroll(self) -> None:
         """Unenrollment function.
-
-            Args:
-                self
 
             Returns:
                 None
