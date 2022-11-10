@@ -1,4 +1,4 @@
-from Ticket import Ticket
+from Ticket import Ticket, TicketInfo
 from dataclasses import dataclass
 
 
@@ -22,8 +22,8 @@ class PassengerInfo:
 
 class Passenger:
     """Represents class 'Passenger'.
-    Properties:
 
+    Properties:
         @property
         passenger_info ():
             Returns parameter '_passenger_info'.
@@ -31,6 +31,27 @@ class Passenger:
         @passenger_info.setter
         passenger_info (passenger_info: PassengerInfo):
             Setting parameter '_passenger_info' values of 'passenger_info'.
+
+    Methods:
+        add_ticket (ticket: Ticket) -> str:
+            Adding ticket with current ID to Passenger portfolio if there is no ticket with that ID.
+
+        cancel (ticket: Ticket) -> str:
+            Cancelling ticket with current ID from Passenger portfolio if ticket with this ID exists.
+
+    Returns:
+        add_ticket (ticket: Ticket) -> str:
+            String if adding successful.
+
+        cancel_ticket (ticket: Ticket) -> str:
+            String if cancelling successful.
+
+    Raises:
+        add_ticket (ticket: Ticket) -> str:
+            ValueError: If there is no ticket with that ID.
+
+        cancel_ticket (ticket: Ticket) -> str:
+            ValueError: If ticket with this ID exists.
 
     """
     def __init__(self) -> None:
@@ -44,3 +65,17 @@ class Passenger:
     def passenger_info(self, passenger_info: PassengerInfo) -> None:
         if isinstance(passenger_info, PassengerInfo):
             self._passenger_info = passenger_info
+
+    def add_ticket(self, ticket: Ticket) -> str:
+        if ticket.ticket_info.id in self._passenger_info.tickets:
+            raise ValueError(f"Ticket with this ID has already added.")
+        else:
+            self._passenger_info.tickets.append(ticket.ticket_info.id)
+            return f"Added new ticket with ID: {ticket.ticket_info.id}"
+
+    def cancel_ticket(self, ticket: Ticket) -> str:
+        if ticket.ticket_info.id in self._passenger_info.tickets:
+            self._passenger_info.tickets.remove(ticket.ticket_info.id)
+            return f"Ticket with ID: {ticket.ticket_info.id} has been removed."
+        else:
+            raise ValueError(f"No ticket with this ID in your tickets")

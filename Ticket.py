@@ -8,11 +8,13 @@ class TicketInfo:
         id (int): ID of 'Ticket'.
         start_point (str): Start point of route.
         finish_point (str): Finish poit of route.
+        transport_type (str): Type of transport.
 
     """
-    id: str
+    id: int
     start_point: str
     finish_point: str
+    transport_type: str
 
 
 class Ticket:
