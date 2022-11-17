@@ -27,8 +27,8 @@ class Route:
         get_latitude_of_finish_point () -> float:
             Same as get_latitude_of_start_point () but returns finish point.
 
-        route_info (ticket: Ticket):
-            Prints information about the 'Route': km, minutes, hours, day/s.
+        route_info (ticket: Ticket) -> list:
+            Returns list of information about the 'Route': distance, time in hours, start and finish point.
 
         """
     def __init__(self, start_point: str, finish_point: str):
@@ -55,7 +55,7 @@ class Route:
         lat = location.latitude
         return float(lat)
 
-    def route_info(self, ticket: Ticket):
+    def route_info(self, ticket: Ticket) -> list:
         match ticket.ticket_info.transport_type:
             case "Train":
                 coordinates = ((self.get_longitude_of_start_point(), self.get_latitude_of_start_point()),
@@ -72,7 +72,8 @@ class Route:
                                 (self.get_longitude_of_finish_point(), self.get_latitude_of_finish_point()))
                 routes = client.directions(coordinates, profile="driving-hgv")
 
-        print(f"Distance: {round(routes['routes'][0]['summary']['distance'] / 1000, 1)} km.")
-        print(f"Time in minutes: {round(routes['routes'][0]['summary']['duration'] / 60, 1)}.")
-        print(f"Time in hours: {round(routes['routes'][0]['summary']['duration'] / 3600, 1)}.")
-        print(f"Time in day/s: {round(routes['routes'][0]['summary']['duration'] / 86400, 1)}.")
+        distance = round(routes['routes'][0]['summary']['distance'] / 1000, 1)
+        time_in_hours = round(routes['routes'][0]['summary']['duration'] / 3600, 1)
+
+        route_info = [distance, time_in_hours, self.start_point, self.finish_point]
+        return route_info

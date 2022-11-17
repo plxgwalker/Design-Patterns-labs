@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from Transport import Train, Bus, Truck
 from Ticket import Ticket, TicketInfo
-from Passenger import Passenger, PassengerInfo
+from Passenger import Passenger
 
 
 @dataclass
