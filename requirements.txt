@@ -1,0 +1,4 @@
+fastapi~=0.87.0
+openrouteservice~=2.3.3
+geopy~=2.2.0
+uvicorn==0.20.0

@@ -1,6 +1,6 @@
 from unittest import TestCase
-from Schedule import ScheduleMeta, Schedule
-from Depo import Depo, DepoInfo
+from code.Schedule import Schedule
+from code.Depo import Depo, DepoInfo
 import datetime
 
 test_depo = Depo()

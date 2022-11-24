@@ -2,8 +2,6 @@ from threading import Lock
 from Route import Route
 import datetime
 
-# from Depo import Depo, DepoInfo
-
 
 class ScheduleMeta(type):
     _instances = {}
@@ -30,24 +28,17 @@ class Schedule(metaclass=ScheduleMeta):
     """
     def __init__(self, tickets: list):
         self.tickets = tickets
-        self.schedule = "Schedule:\n"
+        self.schedule = []
 
-    def create_schedule(self) -> None:
-        for ticket in self.tickets:
+    def create_schedule(self, tickets: list) -> None:
+        for ticket in tickets:
+            self.tickets.append(ticket)
+
             now = datetime.datetime.now().replace(second=0, microsecond=0)
+
             route = Route(ticket.ticket_info.start_point, ticket.ticket_info.finish_point)
-            route_info = route.route_info(ticket)
-            self.schedule += f"\nDeparture: {now} Arrive: {now + datetime.timedelta(hours=route_info[1])} " \
-                             f"{route_info[2]} -> {route_info[3]} Distance: {route_info[0]}"
+            route_info = route.route_info()
 
-
-# if __name__ == "__main__":
-#     test_depo = Depo()
-#     test_depo_info = DepoInfo(1, "Lviv", [], [], [], [])
-#     test_depo.depo_info = test_depo_info
-#
-#     test_depo.create_tickets("Kyiv", 2, "Bus")
-#
-#     test_schedule = Schedule(test_depo.depo_info.tickets)
-#     test_schedule.create_schedule()
-#     print(test_schedule.schedule)
+            new_schedule = {"departure": now, "arrive": now + datetime.timedelta(hours=route_info[1]),
+                            "point_a": route_info[2], "point_b": route_info[3], "distance": route_info[0]}
+            self.schedule.append(new_schedule)

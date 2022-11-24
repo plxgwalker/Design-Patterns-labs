@@ -1,5 +1,5 @@
-from Depo import Depo, DepoInfo
-from Passenger import Passenger, PassengerInfo
+from code.Depo import Depo, DepoInfo
+from code.Passenger import Passenger, PassengerInfo
 from unittest import TestCase
 
 

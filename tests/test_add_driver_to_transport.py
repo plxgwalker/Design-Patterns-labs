@@ -1,5 +1,4 @@
-import Transport
-import Driver
+from code import Transport, Driver
 from unittest import TestCase
 
 

@@ -1,6 +1,5 @@
 from geopy.geocoders import Nominatim
 import openrouteservice
-from Ticket import Ticket
 
 
 client = openrouteservice.Client(key="5b3ce3597851110001cf6248ce91032d4996451daa881cebcd9f7464")
@@ -55,22 +54,10 @@ class Route:
         lat = location.latitude
         return float(lat)
 
-    def route_info(self, ticket: Ticket) -> list:
-        match ticket.ticket_info.transport_type:
-            case "Train":
-                coordinates = ((self.get_longitude_of_start_point(), self.get_latitude_of_start_point()),
-                               (self.get_longitude_of_finish_point(), self.get_latitude_of_finish_point()))
-                routes = client.directions(coordinates, profile="driving-hgv")
-
-            case "Bus":
-                coordinates = ((self.get_longitude_of_start_point(), self.get_latitude_of_start_point()),
-                               (self.get_longitude_of_finish_point(), self.get_latitude_of_finish_point()))
-                routes = client.directions(coordinates, profile="driving-hgv")
-
-            case "Truck":
-                coordinates = ((self.get_longitude_of_start_point(), self.get_latitude_of_start_point()),
-                                (self.get_longitude_of_finish_point(), self.get_latitude_of_finish_point()))
-                routes = client.directions(coordinates, profile="driving-hgv")
+    def route_info(self) -> list:
+        coordinates = ((self.get_longitude_of_start_point(), self.get_latitude_of_start_point()),
+                       (self.get_longitude_of_finish_point(), self.get_latitude_of_finish_point()))
+        routes = client.directions(coordinates, profile="driving-hgv")
 
         distance = round(routes['routes'][0]['summary']['distance'] / 1000, 1)
         time_in_hours = round(routes['routes'][0]['summary']['duration'] / 3600, 1)

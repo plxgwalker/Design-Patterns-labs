@@ -1,4 +1,4 @@
-from Depo import Depo, DepoInfo
+from code.Depo import Depo, DepoInfo
 from unittest import TestCase
 
 

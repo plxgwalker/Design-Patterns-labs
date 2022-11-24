@@ -1,6 +1,6 @@
 from unittest import TestCase
-from Passenger import PassengerInfo, Passenger
-from Ticket import TicketInfo, Ticket
+from code.Passenger import PassengerInfo, Passenger
+from code.Ticket import TicketInfo, Ticket
 
 
 test_ticket = Ticket()
