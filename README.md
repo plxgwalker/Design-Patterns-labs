@@ -1,5 +1,6 @@
 # Design Patterns laboratory works
-Laboratory works will be separated through branches.
+**<ins>Disclaimer</ins>:** Current project was created strongly in learning interest.
+Laboratory works will be separated through branches:
 
 Branch "main" - "lab-3": Laboratory works leraning Design Patterns.
 
